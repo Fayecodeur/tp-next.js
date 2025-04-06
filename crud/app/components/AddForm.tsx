@@ -6,6 +6,7 @@ import { useFormStatus } from "react-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+
 const schema = z.object({
   name: z.string().nonempty("Le nom est obligatoire"),
   quantity: z.coerce.number().min(1, "La quantité doit être supérieure à 1"),
@@ -13,13 +14,14 @@ const schema = z.object({
 });
 
 type Inputs = z.infer<typeof schema>;
+
 export default function AddForm() {
   const { pending } = useFormStatus();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async (data: Inputs) => {
-      const response = await fetch("/api/add-product", {
+      const response = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

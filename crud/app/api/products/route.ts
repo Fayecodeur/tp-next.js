@@ -1,6 +1,28 @@
 import { prisma } from "@/libs/prisma";
 import { NextResponse } from "next/server";
 
+export async function GET() {
+  try {
+    const products = await prisma.product.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json(products, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Une erreur s'est produite lors de le recupération...",
+        error,
+      },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const { name, quantity, price } = await request.json();
@@ -14,6 +36,6 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   } finally {
-    prisma.$disconnect();
+    await prisma.$disconnect();
   }
 }
