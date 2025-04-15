@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Background from "./ui/Background";
-
+import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -27,10 +27,13 @@ export default function RootLayout({
           </div>
         </header>
         <main>
-           {children}
-           <Background />
+          <Toaster />
+          {children}
+          <Background />
         </main>
-        <footer><p>&copy; DonkeyGeek</p></footer>
+        <footer>
+          <p>&copy; DonkeyGeek</p>
+        </footer>
       </body>
     </html>
   );
