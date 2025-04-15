@@ -1,17 +1,30 @@
-import { prisma } from "@/lib/prisma";
-
+"use client";
+import { useFormState } from "react-dom";
+import { createTodo } from "../actions/createTodo";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 const CreateTodo = () => {
-  async function createTodo(formData: FormData) {
-    "use server";
-    const title = formData.get("title") as string;
-    const date = formData.get("date") as string;
-    await prisma.todo.create({
-      data: { title, date },
-    });
-  }
+  const initialState = {
+    message: "",
+  };
+  const router = useRouter();
+  const [state, formAction] = useFormState(createTodo, initialState);
+  const [toastIsShown, setToastIsShown] = useState<boolean>(false);
+  useEffect(() => {
+    if (state.message === "success" && !toastIsShown) {
+      toast.success("Tâche créée avec succès !");
+      setToastIsShown(true);
+      router.push("/todos");
+    } else if (state.message === "error" && !toastIsShown) {
+      toast.error("Erreur lors de la création de la tâche");
+      setToastIsShown(true);
+    }
+  }, [state.message, toastIsShown, router]);
+
   return (
     <>
-      <form className="form" action={createTodo}>
+      <form className="form" action={formAction}>
         <div className="title">
           <h1>Créer une tâche</h1>
         </div>
