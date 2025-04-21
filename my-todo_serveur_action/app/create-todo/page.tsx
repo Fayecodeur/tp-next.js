@@ -1,27 +1,25 @@
 "use client";
+
 import { useFormState } from "react-dom";
 import { createTodo } from "../actions/createTodo";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const CreateTodo = () => {
   const initialState = {
     message: "",
   };
-  const router = useRouter();
   const [state, formAction] = useFormState(createTodo, initialState);
-  const [toastIsShown, setToastIsShown] = useState<boolean>(false);
-  useEffect(() => {
-    if (state.message === "success" && !toastIsShown) {
-      toast.success("Tâche créée avec succès !");
-      setToastIsShown(true);
-      router.push("/todos");
-    } else if (state.message === "error" && !toastIsShown) {
-      toast.error("Erreur lors de la création de la tâche");
-      setToastIsShown(true);
-    }
-  }, [state.message, toastIsShown, router]);
-
+  const [toastIsShown, setToastIsShown] = useState(false);
+  const router = useRouter();
+  if (state.message === "success" && !toastIsShown) {
+    toast.success("Tache ajoutée avec success");
+    setToastIsShown(true);
+    router.push("/todos");
+  } else if (state.message === "error" && !toastIsShown) {
+    toast.error("Erreur lors de la création de la tache");
+    setToastIsShown(true);
+  }
   return (
     <>
       <form className="form" action={formAction}>
