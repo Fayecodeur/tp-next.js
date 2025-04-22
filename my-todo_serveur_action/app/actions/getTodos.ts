@@ -15,3 +15,18 @@ export async function getTodos() {
     prisma.$disconnect;
   }
 }
+
+export async function getTodoById(id: string) {
+  try {
+    const todo = await prisma.todo.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+    return todo;
+  } catch (error) {
+    throw new Error("Erreur lors de la récupération de la tâche");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
