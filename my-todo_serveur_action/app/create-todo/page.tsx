@@ -2,27 +2,39 @@
 
 import { useFormState } from "react-dom";
 import { createTodo } from "../actions/createTodo";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Button from "../ui/Button";
 const CreateTodo = () => {
   const initialState = {
     message: "",
   };
   const [state, formAction] = useFormState(createTodo, initialState);
   const [toastIsShown, setToastIsShown] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  if (state.message === "success" && !toastIsShown) {
-    toast.success("Tache ajoutée avec success");
-    setToastIsShown(true);
-    router.push("/todos");
-  } else if (state.message === "error" && !toastIsShown) {
-    toast.error("Erreur lors de la création de la tache");
-    setToastIsShown(true);
-  }
+  useEffect(() => {
+    if (state.message === "success" && !toastIsShown) {
+      toast.success("Tache ajoutée avec success");
+      setToastIsShown(true);
+      router.push("/todos");
+    } else if (state.message === "error" && !toastIsShown) {
+      toast.error("Erreur lors de la création de la tache");
+      setToastIsShown(true);
+    }
+  }, [state.message, toastIsShown, router]);
+
   return (
     <>
-      <form className="form" action={formAction}>
+      <form
+        className="form"
+        action={async (formData: FormData) => {
+          formAction(formData);
+          formRef.current?.reset();
+        }}
+        ref={formRef}
+      >
         <div className="title">
           <h1>Créer une tâche</h1>
         </div>
@@ -52,9 +64,7 @@ const CreateTodo = () => {
         </div>
 
         <div className="button-container">
-          <button type="submit" className="btn-success">
-            Créer
-          </button>
+          <Button />
         </div>
       </form>
     </>
