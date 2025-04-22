@@ -41,7 +41,9 @@ export default function EditTodo({ todo }: { todo: Todo }) {
       </div>
 
       <div className="button-container">
-        <Button />
+        <button type="submit" className="btn-success">
+          Modifier
+        </button>
       </div>
     </form>
   );
