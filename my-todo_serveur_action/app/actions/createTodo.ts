@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 import { z } from "zod";
 
@@ -28,6 +29,7 @@ export async function createTodo(
     await prisma.todo.create({
       data: { title, date },
     });
+    revalidatePath("/todos");
     return { message: "success" };
   } catch (error) {
     return { message: "error" };
