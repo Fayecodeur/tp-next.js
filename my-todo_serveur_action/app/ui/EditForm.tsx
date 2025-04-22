@@ -1,18 +1,55 @@
-import React from "react";
-import Button from "./Button";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { useFormState } from "react-dom";
+import { useRouter } from "next/navigation"; // ✅ bon import
+import toast from "react-hot-toast";
+import { updateTodo } from "../actions/createTodo";
+
 interface Todo {
   id: number;
   title: string;
   date: string;
 }
 
+const initialState = {
+  message: "",
+};
+
 export default function EditTodo({ todo }: { todo: Todo }) {
+  const [state, formAction] = useFormState(updateTodo, initialState);
+  const router = useRouter();
+  const [toastIsShown, setToastIsShown] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.message === "success" && !toastIsShown) {
+      toast.success("Tâche modifiée avec succès");
+      setToastIsShown(true);
+      router.push("/todos");
+    } else if (state.message === "error" && !toastIsShown) {
+      toast.error("Erreur lors de la modification de la tâche");
+      setToastIsShown(true);
+    }
+  }, [state.message, toastIsShown, router]);
+
   const { title, date } = todo;
+
   return (
-    <form className="form">
+    <form
+      className="form"
+      action={async (formData: FormData) => {
+        formAction(formData);
+        formRef.current?.reset();
+      }}
+      ref={formRef}
+    >
+      {/* ✅ id caché pour le backend */}
+      <input type="hidden" name="id" value={todo.id} />
+
       <div className="title">
         <h1>Modifier une tâche</h1>
       </div>
+
       <div className="align-horizontal">
         <div className="todo-container">
           <label className="placeholder">Tâche</label>
