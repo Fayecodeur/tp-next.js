@@ -1,6 +1,7 @@
 import { formatDate } from "@/app/utils/formatDate";
 import { getTodos } from "../actions/getTodos";
 import UptadeButton from "../ui/UptadeButton";
+import DeleteTodoButton from "../ui/DeleteTodoButton";
 
 interface Todo {
   id: string;
@@ -26,9 +27,9 @@ const TodoList = async () => {
                 <p className="date">{formatDate(todo.date)}</p>
                 <h2>{todo.title}</h2>
 
-                <div>
+                <div className="btnIconsContainer">
                   <UptadeButton id={todo.id.toString()} />
-                  <button className="btn btn-delete">Supprimer</button>
+                  <DeleteTodoButton id={todo.id.toString()} />
                 </div>
               </div>
             </li>

@@ -75,3 +75,18 @@ export async function updateTodo(
     return { message: "error" };
   }
 }
+
+export async function deleteTodo(id: string) {
+  try {
+    await prisma.todo.delete({
+      where: {
+        id: Number(id), // Convertir l'id en nombre si nécessaire
+      },
+    });
+    revalidatePath("/todos");
+    return { message: "success" };
+  } catch (error) {
+    console.error("Erreur lors de la suppression :", error);
+    return { message: "error" };
+  }
+}
